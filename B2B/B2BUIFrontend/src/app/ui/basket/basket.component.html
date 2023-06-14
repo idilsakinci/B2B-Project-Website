@@ -1,0 +1,51 @@
+<section id="feature" class="feature">
+  <div class="container">
+    <div class="section-header">
+      <h2>Products in Basket</h2>
+    </div>
+    <div class="feature-content">
+      <div class="form-group">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Product Name</th>
+              <th>Quantity</th>
+              <th>Unit Price</th>
+              <th>Total</th>
+              <th>Transactions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let basket of baskets let index = index">
+              <td [innerText]="index + 1"></td>
+              <td [innerText]="basket.productName"></td>
+              <td [innerText]="basket.quantity"></td>
+              <td [innerText]="basket.price | currency: 'TRY':'symbol-narrow':'1.2-2'"></td>
+              <td [innerText]="basket.total | currency: 'TRY':'symbol-narrow':'1.2-2'"></td>
+              <td>
+                <button class="btn btn-danger" [swal]="deleteSwal" (confirm)="delete(basket)">Delete</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <hr>
+      <div class="form-group">
+        <div class="text-center">
+          <h4>Total Price: </h4> {{total | currency: 'TRY':'symbol-narrow':'1.2-2' }}
+          <hr>
+          <button class="btn btn-info btn-block" [swal]="createSwal" (confirm)="createOrder()" *ngIf="baskets.length > 0">Order</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<swal #deleteSwal title="Delete?" text="Do you want to delete the product from the basket?" type="question"
+  [showCancelButton]="true" [focusCancel]="true"
+  [swalOptions]="{ confirmButtonText: 'Delete', cancelButtonText: 'Quit' }"></swal>
+
+<swal #createSwal title="Order?" text="Do you want to order?" type="question"
+  [showCancelButton]="true" [focusCancel]="true"
+  [swalOptions]="{ confirmButtonText: 'Order', cancelButtonText: 'Quit' }"></swal>

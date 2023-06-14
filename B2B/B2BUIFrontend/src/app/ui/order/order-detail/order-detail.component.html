@@ -1,0 +1,68 @@
+<section id="feature" class="feature">
+  <div class="container">
+    <div class="section-header">
+      <h2>Order Detail</h2>
+    </div>
+    <div class="feature-content">
+      <div class="container">
+        <div class="card">
+          <div class="card-body">
+            <div id="invoice">
+              <div class="toolbar hidden-print">
+                <div class="text-end">
+                  <a href="javascript:window.print()" class="btn btn-dark btn-lg"><i class="fa fa-print"></i> Print</a>
+                </div>
+                <hr>
+              </div>
+              <div class="invoice overflow-auto">
+                <div style="min-width: 600px">
+                  <main>
+                    <div class="row contacts">
+                      <div class="col invoice-to">
+                        <h2 class="to">Date: {{order.date | date:'dd.MM.yyyy'}}</h2>
+                        <h2 class="to">Order Number: {{order.orderNumber}}</h2>
+                        <h2 class="to">Order Status: <strong>{{order.status}}</strong></h2>
+                      </div>
+                    </div>
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>#</th>
+                          <th class="text-left">Product Name</th>
+                          <th class="text-right">Quantity</th>
+                          <th class="text-right">Unit Price</th>
+                          <th class="text-right">Total</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let orderDetail of orderDetails let index = index">
+                          <td class="no" [innerText]="index + 1"></td>
+                          <td class="text-left">
+                            <h3 [innerText]="orderDetail.productName"></h3>
+                          </td>
+                          <td class="unit" [innerText]="orderDetail.quantity"></td>
+                          <td class="qty" [innerText]="orderDetail.price"></td>
+                          <td class="total" [innerText]="orderDetail.total | currency:'TRY':'symbol-narrow':'1.2-2'">
+                          </td>
+                        </tr>
+                      </tbody>
+                      <tfoot>
+                        <tr>
+                          <td colspan="2"></td>
+                          <td colspan="2">Total</td>
+                          <td [innerText]="order.total | currency:'TRY':'symbol-narrow':'1.2-2'"></td>
+                        </tr>
+                      </tfoot>
+                    </table>
+                  </main>
+                </div>
+                <div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</section>
