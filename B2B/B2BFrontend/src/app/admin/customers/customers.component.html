@@ -1,0 +1,206 @@
+<div class="content-wrapper">
+  <section class="content-header">
+    <div class="container-fluid">
+      <div class="row mb-2">
+        <div class="col-sm-6">
+          <h1>Customers</h1>
+        </div>
+        <div class="col-sm-6">
+          <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a routerLink="/">Home</a></li>
+            <li class="breadcrumb-item active">Customers</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="content">
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">Customers</h3>
+        <div class="card-tools">
+          <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+            <i class="fas fa-minus"></i>
+          </button>
+          <button type="button" class="btn btn-tool" data-card-widget="remove" title="Remove">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+      </div>
+
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-6">
+            <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addModel">
+              Add Customers</button>
+            <button class="btn btn-secondary mx-2" (click)="exportExcel()">
+              Export to Excel</button>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group offset-6">
+              <input class="form-control form-control-sidebar" type="search" [(ngModel)]="filterText"
+                [ngModelOptions]="{standalone:true}" placeholder="Search" aria-label="Search">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-body">
+        <table class="table table-hovered" id="excel-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Customers</th>
+              <th>E-mail</th>
+              <th>Price List</th>
+              <th>Discount Rate</th>
+              <th>Transactions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let customer of customers | customerPipe: filterText let index = index">
+              <td [innerText]="index+1"></td>
+              <td [innerText]="customer.name"></td>
+              <td [innerText]="customer.email"></td>
+              <td [innerText]="customer.priceListName"></td>
+              <td [innerText]="customer.discount"></td>
+              <td>
+                <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#updateRelationshipModel"
+                  (click)="getCustomer(customer)">Set Relationship</button>
+                <button class="btn btn-warning mx-2" data-bs-toggle="modal" data-bs-target="#updateModel"
+                  (click)="getCustomer(customer)">Update Customer</button>
+                <button class="btn btn-info mx-2" data-bs-toggle="modal" data-bs-target="#updatePasswordModel"
+                  (click)="getCustomer(customer)">Update Customer Password</button>
+                <button class="btn btn-danger mx-2" [swal]="deleteSwal" (confirm)="delete(customer)">Delete</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+</div>
+
+<div class="modal fade" id="addModel" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Add Customer</h5>
+      </div>
+      <div class="modal-body">
+        <form #addForm="ngForm">
+          <div class="form-group">
+            <label for="exampleInputEmail">Customer Name</label>
+            <input type="text" class="form-control" ngModel name="name" #name required minlength="3"
+              placeholder="Customer Name">
+          </div>
+          <div class="form-group">
+            <label for="exampleInputEmail">Customer E-mail</label>
+            <input type="email" class="form-control" ngModel name="email" #email required email minlength="3"
+              placeholder="Customer E-mail">
+          </div>
+          <div class="form-group">
+            <label for="exampleInputEmail">Customer Password</label>
+            <input type="password" class="form-control" ngModel name="password" #password required>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-success" [disabled]="!addForm.valid" (click)="add(addForm)">Add
+          Customer</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="updateModel" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Update Customer</h5>
+      </div>
+      <div class="modal-body">
+        <form #updateForm="ngForm">
+          <div class="form-group">
+            <label for="exampleInputEmail">Customer Name</label>
+            <input type="text" class="form-control" [(ngModel)]="customer.name" [ngModelOptions]="{standalone: true}"
+              name="name" #name required minlength="3" placeholder="Customer Name">
+          </div>
+          <div class="form-group">
+            <label for="exampleInputEmail">Customer E-mail</label>
+            <input type="email" class="form-control" [(ngModel)]="customer.email" [ngModelOptions]="{standalone: true}"
+              name="email" #email required email minlength="3" placeholder="Customer E-mail">
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-warning" [disabled]="!updateForm.valid" (click)="update()">Save
+          Changes</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="updateModelCloseBtn">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="updatePasswordModel" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Change Customer Password</h5>
+      </div>
+      <form #updateForm="ngForm">
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="exampleInputEmail">Customer Password</label>
+            <input type="password" class="form-control" [(ngModel)]="newPassword" [ngModelOptions]="{standalone: true}" name="password" #password required minlength="3">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-info" [disabled]="!updateForm.valid"
+            (click)="changePassword()">Save
+            Changes</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+            id="updatePasswordModelCloseBtn">Close</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="updateRelationshipModel" tabindex="-1" aria-labelledby="exampleModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Update Customer Relationship</h5>
+      </div>
+      <div class="modal-body">
+        <form #updateForm="ngForm">
+          <div class="form-group">
+            <label for="exampleInputEmail">Price List</label>
+            <select class="form-control" [(ngModel)]="customer.priceListId" [ngModelOptions]="{standalone: true}"
+              name="priceListId" #priceListId required>
+              <option [value]="priceList.id" *ngFor="let priceList of priceLists" [innerText]="priceList.name"></option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="exampleInputEmail">Discount</label>
+            <input type="text" class="form-control" [(ngModel)]="customer.discount"
+              [ngModelOptions]="{standalone: true}" name="discount" #discount required>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-success" [disabled]="!updateForm.valid" (click)="updateRelationship()">Save
+          Changes</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+          id="updateRelationshipModelCloseBtn">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<swal #deleteSwal title="Delete?" text="Do you want to delete the customer?" type="question" [showCancelButton]="true"
+  [focusCancel]="true" [swalOptions]="{confirmButtonText: 'Delete', cancelButtonText: 'Quit'}"></swal>

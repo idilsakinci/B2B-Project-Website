@@ -1,0 +1,131 @@
+<div class="content-wrapper">
+  <section class="content-header">
+    <div class="container-fluid">
+      <div class="row mb-2">
+        <div class="col-sm-6">
+          <h1>Products</h1>
+        </div>
+        <div class="col-sm-6">
+          <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a routerLink="/">Home</a></li>
+            <li class="breadcrumb-item active">Products</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="content">
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">Products List</h3>
+        <div class="card-tools">
+          <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+            <i class="fas fa-minus"></i>
+          </button>
+          <button type="button" class="btn btn-tool" data-card-widget="remove" title="Remove">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+      </div>
+
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-6">
+            <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#productAddModel">
+              Add Product</button>
+            <button class="btn btn-secondary mx-2" (click)="exportExcel()">
+              Export to Excel</button>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group offset-6">
+              <input class="form-control form-control-sidebar" type="search" [(ngModel)]="filterText"
+                [ngModelOptions]="{standalone:true}" placeholder="Search" aria-label="Search">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-body">
+        <table class="table table-hovered" id="excel-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Product Name</th>
+              <th>Product Image</th>
+              <th>Transactions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let product of products | productPipe: filterText let index = index">
+              <td [innerText]="index+1"></td>
+              <td>
+                <a [innerText]="product.name" routerLink="/products/{{product.id}}/images"
+                  class="btn btn-default"></a>
+              </td>
+              <td>
+                <img [src]="product.mainImage == '' ? './assets/img/noimg.jpg' : './assets/img/' + product.mainImageUrl" alt="">
+              </td>
+              <td>
+                <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#productUpdateModel"
+                  (click)="getProduct(product)">Update Product</button>
+                <button class="btn btn-danger mx-2" [swal]="deleteSwal" (confirm)="delete(product)">Delete</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+</div>
+
+<div class="modal fade" id="productAddModel" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Add Product</h5>
+      </div>
+      <div class="modal-body">
+        <form #addForm="ngForm">
+          <div class="form-group">
+            <label for="exampleInputEmail">Product Name</label>
+            <input type="text" class="form-control" ngModel name="productName" #productName required minlength="3"
+              placeholder="Product name">
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-success" [disabled]="!addForm.valid" (click)="add(addForm)">Add</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="productUpdateModel" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Update Product</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">x</button>
+      </div>
+      <div class="modal-body">
+        <form #updateForm="ngForm">
+          <div class="form-group">
+            <label for="exampleInputEmail">Product Name</label>
+            <input type="text" class="form-control" [(ngModel)]="product.name" [ngModelOptions]="{standalone:true}"
+              name="productName" #productName required minlength="3" placeholder="Product name">
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-warning" [disabled]="!updateForm.valid" (click)="update()">Save
+          Changes</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="updateModelCloseBtn">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<swal #deleteSwal title="Delete?" text="Do you want to delete the product?" type="question" [showCancelButton]="true"
+  [focusCancel]="true" [swalOptions]="{confirmButtonText: 'Delete', cancelButtonText: 'Quit'}"></swal>

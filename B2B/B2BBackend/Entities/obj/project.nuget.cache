@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "dgSpecHash": "i9xCVYFXDetGH1XSKq16l5zrIDv99PtvvCxpMG3EgosKdmIsE+Mlm1i2PsO50JrNgDfiiWwEj86mjcyHDZKKUQ==",
+  "success": true,
+  "projectFilePath": "C:\\idil\\Projects\\B2B\\B2BBackend\\Entities\\Entities.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\idils\\.nuget\\packages\\microsoft.aspnetcore.http.features\\5.0.17\\microsoft.aspnetcore.http.features.5.0.17.nupkg.sha512",
+    "C:\\Users\\idils\\.nuget\\packages\\microsoft.extensions.primitives\\5.0.1\\microsoft.extensions.primitives.5.0.1.nupkg.sha512",
+    "C:\\Users\\idils\\.nuget\\packages\\system.io.pipelines\\5.0.2\\system.io.pipelines.5.0.2.nupkg.sha512"
+  ],
+  "logs": []
+}

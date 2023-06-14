@@ -1,0 +1,108 @@
+<div class="content-wrapper">
+  <section class="content-header">
+    <div class="container-fluid">
+      <div class="row mb-2">
+        <div class="col-sm-6">
+          <h1>Orders</h1>
+        </div>
+        <div class="col-sm-6">
+          <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item active">Orders</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="content">
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">Orders</h3>
+        <div class="card-tools">
+          <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+            <i class="fas fa-minus"></i>
+          </button>
+          <button type="button" class="btn btn-tool" data-card-widget="remove" title="Remove">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+      </div>
+
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-3">
+            <button class="btn btn-secondary mx-2" (click)="exportExcel()">
+              Export to Excel</button>
+          </div>
+          <div class="col-md-3">
+            <select name="status" id="status" class="form-control" [(ngModel)]="statusText"
+              [ngModelOptions]="{standalone: true}">
+              <option value="All">All</option>
+              <option value="Rejected">Rejected</option>
+              <option value="Waiting for approval">Waiting for Approval</option>
+              <option value="In process">In Process</option>
+              <option value="Ready to ship">Ready to Ship</option>
+              <option value="Shipped">Shipped</option>
+            </select>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group offset-6">
+              <input class="form-control form-control-sidebar" type="search" [(ngModel)]="filterText"
+                [ngModelOptions]="{standalone:true}" placeholder="Search" aria-label="Search">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-body">
+        <table class="table table-hovered" id="excel-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Status</th>
+              <th>Date</th>
+              <th>Order Number</th>
+              <th>Customer Name</th>
+              <th>Order Quantity</th>
+              <th>Total Price</th>
+              <th>Transactions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let order of orders | orderPipe: statusText: filterText let index = index">
+              <td [innerText]="index+1"></td>
+              <td [innerText]="order.status"></td>
+              <td [innerText]="order.date | date: 'dd.MM.yyyy'"></td>
+              <td>
+                <a [innerText]="order.orderNumber" routerLink="/order-detail/{{order.id}}" class="btn btn-default"></a>
+              </td>
+              <td [innerText]="order.customerName"></td>
+              <td [innerText]="order.quantity"></td>
+              <td [innerText]="order.total | currency: 'TRY': 'symbol-narrow': '1.2-2'"></td>
+
+              <td *ngIf="order.status == 'Rejected'">
+              </td>
+              <td *ngIf="order.status == 'Waiting for approval'">
+                <button class="btn btn-danger" (click)="update(order, 'Rejected')">Reject</button>
+                <button class="btn btn-success mx-2" (click)="update(order, 'In process')">In Process</button>
+              </td>
+              <td *ngIf="order.status == 'In process'">
+                <button class="btn btn-danger" (click)="update(order, 'Waiting for approval')">Waiting for
+                  Approval</button>
+                <button class="btn btn-primary mx-2" (click)="update(order, 'Ready to ship')">Ready to Ship</button>
+              </td>
+              <td *ngIf="order.status == 'Ready to ship'">
+                <button class="btn btn-danger" (click)="update(order, 'In process')">In Process</button>
+                <button class="btn btn-info mx-2" (click)="update(order, 'Shipped')">Shipped</button>
+              </td>
+              <td *ngIf="order.status == 'Shipped'">
+                <button class="btn btn-danger" (click)="update(order, 'Ready to ship')">Ready to Ship</button>
+              </td>
+
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+</div>
